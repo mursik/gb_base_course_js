@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Homework</title>
+</head>
+<body>
+<!--
+Необязательное задание, но желательно сделать.
+
+Необходимо данное задание выполнить в es5 стиле и в es6 стиле.
+Необходимо создать функцию-конструктор/класс для поста в социальной сети.
+Названия: `PostES5` для es5 стиля и `PostES6` для es6 стиля.
+Пост должен хранить:
+1. Автора поста (имени достаточно).
+2. Текст поста.
+3. Дату и время последнего изменения поста.
+Данные автора поста и текст поста необходимо передавать при создании
+экземпляра объекта.
+Каждому экземпляру объекта должен быть доступен метод `edit`, который будет
+менять текст поста.
+
+---
+
+Необходимо создать функцию-конструктор/класс для закрепленного поста в
+социальной сети.
+Названия: `AttachedPostES5` для es5 стиля и `AttachedPostES6` для es6 стиля.
+Закрепленный пост должен наследоваться от обычного поста.
+Данные автора поста и текст поста необходимо передавать при создании
+экземпляра объекта.
+Закрепленный пост должен иметь свойство `highlighted`, в котором по умолчанию
+будет лежать значение false (это свойство будет обозначать, будет ли наш
+закрепленный пост подсвечен).
+У экземпляров объекта закрепленного поста должен быть метод с названием
+`makeTextHighlighted`, который сделает так, чтобы наш пост стал подсвеченным
+(будет менять свойство `highlighted`).
+
+---
+
+Подсказки:
+1. Задание сложное, советую делать по аналогии с примером на онлайн-занятии.
+2. Обратите внимание что пост хранит "дату и время последнего изменения
+поста", это значит что если пост кто-то изменит (например вызовет какой-то
+метод, который изменит что-то в посте), дата и время последнего изменения
+поста также должна измениться.
+3. Выполняйте все по порядку, не стоит пытаться сделать все сразу, иначе можно
+что-нибудь пропустить.
+4. Если непонятно условие - задайте вопрос.
+-->
+<script>
+  "use strict";
+
+  // es5
+  // Функция-конструктор для поста
+  function PostES5(author, text) {
+    this.author = author;
+    this.text = text;
+    // Запоминаем дату и время создания поста
+    this.dateTimeChange = commitChanges();
+  }
+  // Добавляем в прототип поста функцию, которая вносит изменения в текст поста
+  PostES5.prototype.edit = function(newText) {
+    this.text = newText;
+    // Запоминаем дату и время изменения текста
+    this.dateTimeChange = commitChanges();
+  };
+  // Функция-конструктор для закрепленного поста в соцсети
+  function AttachedPostES5(author, text) {
+    PostES5.call(this, author, text);
+    this.highlighted = false;
+  }
+  // Добавляем в прототип закрепленного поста функцию, 
+  // которая делает пост "подсвеченным"
+  AttachedPostES5.prototype.makeTextHighlighted = function() {
+    this.highlighted = true;
+    // Запоминаем дату и время изменения 
+    this.dateTimeChange = commitChanges();
+  };
+  // функция формирует удобочитаемую строку со времененим и датой
+  // изменения поста
+  function commitChanges() {
+    const date = new Date();
+    return `${date.toLocaleDateString()} в ${ date.toLocaleTimeString()}`;
+  }
+
+  const postES51 = new PostES5('Бог', 'Создание мира за 3 дня.');
+  console.log(`${postES51.dateTimeChange} создан пост "${postES51.text}", автор "${postES51.author}"`);
+
+  postES51.edit('Создание мира за 7 дней. Для продвинутых юзеров.');
+  console.log(`${postES51.dateTimeChange} "${postES51.author}" изменил текст поста на "${postES51.text}"`);
+
+  const postES52 = new AttachedPostES5('Доброжелатель', 'Отправить мир в тартарары за 1 день. Для чайников.');
+  postES52.makeTextHighlighted();
+  console.log(`${postES52.dateTimeChange} "${postES52.author}" опубликовал пост "${postES52.text}"`);
+
+  // es6
+  // Класс для поста
+  class PostES6{
+    // Конструктор
+    constructor(author, text) {
+      this.author = author;
+      this.text = text;
+      this.dateTimeChange = this.commitChanges();
+    }
+    // метод вносит изменения в текст поста
+    edit(newText) {
+      this.text = newText;
+      this.dateTimeChange = this.commitChanges();
+    }
+    // метод формирует удобочитаемую строку со времененим и датой
+    // изменения поста
+    commitChanges() {
+      const date = new Date();
+      return `${date.toLocaleDateString()} в ${ date.toLocaleTimeString()}`;
+    }
+  }
+
+  // Класс закрепленного поста в соцсети
+  class AttachedPostES6 extends PostES6 {
+
+    highlighted = false;
+    // метод делает закрепленный пост "подсвеченным"
+    makeTextHighlighted() {
+      this.highlighted = true;
+      this.date = this.commitChanges();
+    }
+  }
+
+  const postES61 = new PostES5('Бог', 'Создание мира за 3 дня.');
+  console.log(`${postES61.dateTimeChange} создан пост "${postES61.text}", автор "${postES61.author}"`);
+
+  postES61.edit('Создание мира за 7 дней. Для продвинутых юзеров.');
+  console.log(`${postES61.dateTimeChange} "${postES61.author}" изменил текст поста на "${postES61.text}"`);
+
+  const postES62 = new AttachedPostES5('Доброжелатель', 'Отправить мир в тартарары за 1 день. Для чайников.');
+  postES62.makeTextHighlighted();
+  console.log(`${postES62.dateTimeChange} "${postES62.author}" опубликовал пост "${postES62.text}"`);
+
+</script>
+</body>
+</html>
